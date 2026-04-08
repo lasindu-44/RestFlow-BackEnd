@@ -21,7 +21,7 @@ namespace RestFlow.Controllers.APIs
 
         [Authorize(Roles = "SystemAdmin")]
         [HttpPost("upload")]
-        public async Task<IActionResult> CreateRestaurant([FromForm] CreateRestaurantDto restaurantDto)
+        public async Task<IActionResult> CreateRestaurant([FromForm]CreateRestaurantDto restaurantDto)
         {
             
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
