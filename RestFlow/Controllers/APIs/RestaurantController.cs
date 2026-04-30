@@ -77,5 +77,22 @@ namespace RestFlow.Controllers.APIs
             return await restaurantRepository.DeleteRestaurantAsync(RestaurantId,userId);
 
         }
+        [Authorize]
+        [HttpGet("fetchAllRestaurants")]
+        public async Task<IEnumerable<RestaurantDto>> fetchAllRestaurants()
+        {
+          
+            return await restaurantRepository.GetAllActiveRestaurantsAsync();
+
+        }
+
+        [Authorize]
+        [HttpGet("fetchAllMenuItems")]
+        public async Task<List<MenuCategory>> fetchAllMenuItems(int RestId)
+        {
+
+            return await restaurantRepository.GetRestaurantMenuAsync(RestId);
+
+        }
     }
 }

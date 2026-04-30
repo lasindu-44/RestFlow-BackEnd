@@ -81,15 +81,15 @@ namespace RestFlow.Repositories.Implementations
 
         }
 
-        public async Task<CreateRestaurantDto> UpdateRestaurantAsync(int id, CreateRestaurantDto restaurant,string userId)
+        public async Task<CreateRestaurantDto> UpdateRestaurantAsync(int id, CreateRestaurantDto restaurant, string userId)
         {
             try
             {
-                if(id !=0)
+                if (id != 0)
                 {
                     var Restaurant = await _context.Restaurants.Where(r => r.Id == id).FirstOrDefaultAsync();
 
-                    if(Restaurant is not null)
+                    if (Restaurant is not null)
                     {
                         Restaurant.name = restaurant.name;
                         Restaurant.phone = restaurant.phone;
@@ -123,7 +123,7 @@ namespace RestFlow.Repositories.Implementations
             {
                 var restdata = await _context.Restaurants.Where(d => d.Id == id).FirstOrDefaultAsync();
 
-                if(restdata is not null)
+                if (restdata is not null)
                 {
                     restdata.IsActive = false;
                     restdata.LastUpdatedAt = DateTime.Now;
@@ -134,10 +134,81 @@ namespace RestFlow.Repositories.Implementations
 
                 return true;
 
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 return false;
 
+            }
+        }
+
+        public async Task<IEnumerable<RestaurantDto>> GetAllActiveRestaurantsAsync()
+        {
+            try
+            {
+                return await _context.Restaurants
+           .Where(r => r.IsActive == true)
+           .Select(r => new RestaurantDto
+           {
+               Id = r.Id,
+               name = r.name,
+               CuisineName = r.cuisine.ToString(), // convert enum to string
+               email = r.email,
+               phone = r.phone,
+               address = r.address,
+               imageUrl = r.imageUrl,
+               openTime = r.openTime,
+               closeTime = r.closeTime,
+               IsActive = r.IsActive,
+               cuisine = r.cuisine
+           })
+           .ToListAsync();
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
+        public async Task<List<MenuCategory>> GetRestaurantMenuAsync(int restaurantId)
+        {
+            try
+            {
+                var categories = await _context.FoodCategories
+                    .Where(c => c.restaurantId == restaurantId && c.isActive)
+                    .Select(c => new MenuCategory
+                    {
+                        category = new FoodCategoriesDto
+                        {
+                            categoryId = c.categoryId,
+                            restaurantId = c.restaurantId,
+                            categoryName = c.categoryName,
+                            description = c.description,
+                            displayOrder = c.displayOrder,
+                            isActive = c.isActive
+                        },
+                        items = _context.FoodItems
+                            .Where(i => i.restaurantId == restaurantId && i.categoryId == c.categoryId && i.available)
+                            .Select(i => new FoodItemDto
+                            {
+                                Id = i.Id,
+                                restaurantId = i.restaurantId,
+                                categoryId = i.categoryId,
+                                name = i.name,
+                                description = i.description,
+                                price = i.price,
+                                prepTime = i.prepTime,
+                                available = i.available,
+                                imagePreview = i.imagePreview
+                            }).ToList()
+                    }).ToListAsync();
+                return categories;
+            }
+            catch (Exception ex)
+            {
+                return null;
             }
         }
     }

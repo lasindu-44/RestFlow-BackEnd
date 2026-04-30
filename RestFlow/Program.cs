@@ -11,6 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IRestaurantRepository, RestaurantRepository>();
 builder.Services.AddScoped<IFoodCategoriesRepository, FoodCategoriesRepository>();
+builder.Services.AddScoped<IFoodItemRepository, FoodItemRepository>();
+builder.Services.AddScoped<IRestaurantStaffRepository, RestaurantStaffRepository>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
 
 
 // Add controllers

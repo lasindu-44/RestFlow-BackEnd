@@ -24,7 +24,7 @@ namespace RestFlow.Repositories.Implementations
                 vm.restaurantId = foodCategoryDto.restaurantId;
                 vm.CreatedBy = userId;
                 vm.CreatedAt = DateTime.Now;
-                vm.isActive = true;
+                vm.isActive = foodCategoryDto.isActive;
 
 
                 await _context.FoodCategories.AddAsync(vm);
@@ -40,6 +40,8 @@ namespace RestFlow.Repositories.Implementations
                 ExistingRecord.description = foodCategoryDto.description;
                 ExistingRecord.displayOrder = foodCategoryDto.displayOrder;
                 ExistingRecord.restaurantId = foodCategoryDto.restaurantId;
+                ExistingRecord.isActive = foodCategoryDto.isActive;
+
                 await _context.SaveChangesAsync();
                 return ExistingRecord;
             }
